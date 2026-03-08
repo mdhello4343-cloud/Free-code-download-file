@@ -1,300 +1,233 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Downloader - Webapp Sikho</title>
-    <!-- Tailwind CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DOWNLOAD FREE CODE</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Ad SDK -->
     <script src='//libtl.com/sdk.js' data-zone='9745051' data-sdk='show_9745051'></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { colors: { darkBg: '#0f172a', darkCard: '#1e293b' } } }
+        }
+    </script>
+    
     <style>
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-in { animation: fadeIn 0.8s ease-out forwards; }
-        .slide-up { animation: slideUp 0.6s ease-out forwards; opacity: 0; }
-        .animation-delay-200 { animation-delay: 0.2s; }
-        .animation-delay-400 { animation-delay: 0.4s; }
-        .slider-container { position: relative; overflow: hidden; }
-        .slider-wrapper { display: flex; transition: transform 0.5s ease-in-out; }
-        .slider-item { min-width: 100%; box-sizing: border-box; }
-        .slider-dots { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; }
-        .slider-dot { width: 10px; height: 10px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.5); cursor: pointer; }
-        .slider-dot.active { background-color: white; }
-        body { scrollbar-width: none; }
+        body { -webkit-tap-highlight-color: transparent; transition: background 0.3s; scrollbar-width: none; }
         body::-webkit-scrollbar { display: none; }
+        .slider-wrapper { display: flex; transition: transform 0.5s ease-in-out; }
+        .slider-item { min-width: 100%; height: 100%; }
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        .animate-marquee { display: inline-block; white-space: nowrap; animation: marquee 15s linear infinite; }
     </style>
 </head>
-<body class="bg-gray-50 font-sans">
+<body class="bg-gray-100 dark:bg-darkBg text-gray-900 dark:text-gray-100 font-sans min-h-screen">
 
-    <div id="app" class="container mx-auto p-4 max-w-7xl">
-        <!-- Header -->
-        <header class="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-6 rounded-xl shadow-lg mb-8 fade-in">
-            <h1 data-key="main_title" class="text-4xl font-extrabold text-center mb-4">Webapp Sikho</h1>
-            <p data-key="main_subtitle" class="text-center text-lg text-blue-100 mb-6">বিজ্ঞাপন দেখুন এবং আপনার ফাইল ডাউনলোড করুন!</p>
-            <div class="max-w-2xl mx-auto">
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-search text-gray-400"></i>
-                    </div>
-                    <input type="text" id="searchInput" data-key-placeholder="search_placeholder" placeholder="Search for files..." class="w-full p-3 pl-10 rounded-full bg-white text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-300">
-                </div>
-            </div>
-        </header>
+    <!-- Back to Top (Feature 59) -->
+    <button id="backToTop" class="fixed bottom-6 right-6 z-[100] bg-blue-600 text-white w-12 h-12 rounded-full shadow-2xl hidden items-center justify-center transition-all hover:scale-110">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
-        <!-- Ad Slot 1 -->
-        <div id="ad-container-1" class="my-6 flex justify-center min-h-[50px]"></div>
-
-        <!-- Image Slider -->
-        <div id="slider" class="slider-container w-full h-48 md:h-80 bg-gray-300 rounded-xl shadow-lg mb-10 slide-up animation-delay-200">
-            <div id="slider-wrapper" class="slider-wrapper h-full"></div>
-            <div id="slider-dots" class="slider-dots"></div>
-        </div>
-
-        <!-- Ad Slot 2 -->
-        <div id="ad-container-2" class="my-6 flex justify-center min-h-[50px]"></div>
-
-        <!-- Files Section -->
-        <div class="slide-up animation-delay-400">
-            <h2 data-key="available_files" class="text-3xl font-bold text-gray-800 mb-6 border-b-4 border-blue-500 pb-2">Available Files</h2>
-            <div id="files-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
-            <div id="no-results" class="hidden text-center py-12">
-                <i class="fas fa-file-excel text-5xl text-gray-400 mb-4"></i>
-                <p data-key="no_results_text" class="text-xl text-gray-600">No files found.</p>
-            </div>
+    <!-- Top Notice Bar -->
+    <div class="bg-blue-600 dark:bg-blue-800 text-white text-[10px] py-1.5 overflow-hidden font-bold">
+        <div class="animate-marquee">
+            🔥 Welcome to DOWNLOAD FREE CODE | Premium Scripts & Code Hub | Join Telegram for Instant Help! 🔥
         </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-5 right-5 bg-gray-900 text-white py-3 px-5 rounded-lg shadow-2xl opacity-0 transform translate-y-10 transition-all duration-500">
-        <p id="toast-message"></p>
-    </div>
-    
-    <!-- Language Modal -->
-    <div id="language-modal" class="hidden fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
-        <div class="bg-white p-8 rounded-lg shadow-2xl text-center fade-in">
-            <h2 class="text-2xl font-bold mb-6">Choose Your Language</h2>
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <button class="lang-btn px-6 py-3 bg-blue-500 text-white rounded-lg font-semibold" data-lang="en">English</button>
-                <button class="lang-btn px-6 py-3 bg-green-500 text-white rounded-lg font-semibold" data-lang="hi">हिन्दी</button>
-                <button class="lang-btn px-6 py-3 bg-red-500 text-white rounded-lg font-semibold" data-lang="bn">বাংলা</button>
-            </div>
+    <!-- Header (Feature 1 & 54) -->
+    <header class="bg-white dark:bg-darkCard shadow-sm border-b dark:border-gray-800 sticky top-0 z-50 px-4 py-3 flex justify-between items-center">
+        <h1 class="text-xl font-black text-blue-600 dark:text-blue-400">DOWNLOAD FREE CODE</h1>
+        <div class="flex items-center gap-4">
+            <button id="themeToggle" class="text-gray-600 dark:text-gray-300"><i class="fas fa-moon text-xl dark:fa-sun"></i></button>
+            <a href="https://t.me/your_telegram" class="text-blue-500"><i class="fab fa-telegram text-2xl"></i></a>
         </div>
-    </div>
+    </header>
 
-    <footer class="bg-gray-100 py-6 mt-10">
-        <div class="container mx-auto px-4">
-            <div id="ad-container-3" class="my-4 flex justify-center min-h-[50px]"></div>
-            <p class="text-center text-gray-600">&copy; 2025 Webapp Sikho. All rights reserved.</p>
+    <main class="w-full max-w-md mx-auto px-3 pb-20">
+        
+        <!-- Premium Slider -->
+        <div class="relative w-full h-48 bg-gray-200 dark:bg-gray-800 rounded-3xl overflow-hidden my-4 shadow-xl">
+            <div id="slider-wrap" class="slider-wrapper h-full"></div>
+            <div id="slider-dots" class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2"></div>
         </div>
-    </footer>
 
+        <!-- Ad Slot -->
+        <div id="ad-container-1" class="my-4 flex justify-center min-h-[50px]"></div>
+
+        <div class="flex items-center justify-between mb-4 px-1">
+            <h2 class="text-lg font-bold">Recommended Files</h2>
+            <i class="fas fa-certificate text-blue-500"></i>
+        </div>
+
+        <!-- Vertical List View (Feature 54) -->
+        <div id="files-grid" class="space-y-4">
+            <!-- Skeleton Loading -->
+            <div class="h-32 bg-white dark:bg-darkCard rounded-3xl animate-pulse"></div>
+            <div class="h-32 bg-white dark:bg-darkCard rounded-3xl animate-pulse"></div>
+        </div>
+    </main>
+
+    <!-- Script Block -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getFirestore, collection, getDocs, doc, getDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         const firebaseConfig = {
-          apiKey: "AIzaSyBQ8DkVDx4DCrEVLN3LFTnEER0YLa1UqIQ",
-          authDomain: "free-download-code-2cf68.firebaseapp.com",
-          databaseURL: "https://free-download-code-2cf68-default-rtdb.firebaseio.com",
-          projectId: "free-download-code-2cf68",
-          storageBucket: "free-download-code-2cf68.firebasestorage.app",
-          messagingSenderId: "632394494942",
-          appId: "1:632394494942:web:8bde8ba728c6b7e748a34f"
+            apiKey: "AIzaSyBQ8DkVDx4DCrEVLN3LFTnEER0YLa1UqIQ",
+            authDomain: "free-download-code-2cf68.firebaseapp.com",
+            databaseURL: "https://free-download-code-2cf68-default-rtdb.firebaseio.com",
+            projectId: "free-download-code-2cf68",
+            storageBucket: "free-download-code-2cf68.firebasestorage.app",
+            messagingSenderId: "632394494942",
+            appId: "1:632394494942:web:8bde8ba728c6b7e748a34f"
         };
         
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        const sliderWrapper = document.getElementById('slider-wrapper');
-        const sliderDotsContainer = document.getElementById('slider-dots');
-        const filesGrid = document.getElementById('files-grid');
-        const searchInput = document.getElementById('searchInput');
-        const noResultsMessage = document.getElementById('no-results');
-        const languageModal = document.getElementById('language-modal');
+        const TELEGRAM_LINK = "https://t.me/your_telegram";
+        let waitTime = 10;
 
-        let currentSlide = 0;
-        let timerDuration = 10;
-        let currentLang = 'en';
-
-        const translations = {
-            en: { main_title: "Webapp Sikho", main_subtitle: "Watch Ads, Unlock, and Download Files for Free!", search_placeholder: "Search for files...", available_files: "Available Files", no_results_text: "No files found matching your search.", unlock_button: "Unlock ({adCount}/{requiredCount})", download_now_button: "Download Now", toast_download_starting: "Starting download...", toast_progress: "Progress: {adCount}/{requiredCount}", toast_unlocked: "Unlocked!", toast_ad_error: "Ad failed to load.", loading_ad: "Loading ad...", verifying_button: "Wait {countdown}s", },
-            hi: { main_title: "वेबऐप सीखो", main_subtitle: "विज्ञापन देखें और मुफ्त में डाउनलोड करें!", search_placeholder: "फाइलें खोजें...", available_files: "उपलब्ध फाइलें", no_results_text: "कोई फाइल नहीं मिली।", unlock_button: "अनलॉक ({adCount}/{requiredCount})", download_now_button: "अभी डाउनलोड करें", toast_download_starting: "डाउनलोड शुरू हो रहा है...", toast_progress: "प्रगति: {adCount}/{requiredCount}", toast_unlocked: "अनलॉक हो गया!", toast_ad_error: "विज्ञापन लोड नहीं हुआ।", loading_ad: "लोड हो रहा है...", verifying_button: "प्रतीक्षा करें {countdown}s", },
-            bn: { main_title: "ওয়েবঅ্যাপ শিখুন", main_subtitle: "বিজ্ঞাপন দেখুন এবং ফ্রিতে ফাইল ডাউনলোড করুন!", search_placeholder: "ফাইল খুঁজুন...", available_files: "উপলব্ধ ফাইল", no_results_text: "কোনো ফাইল পাওয়া যায়নি।", unlock_button: "আনলক ({adCount}/{requiredCount})", download_now_button: "এখনই ডাউনলোড করুন", toast_download_starting: "ডাউনলোড শুরু হচ্ছে...", toast_progress: "অগ্রগতি: {adCount}/{requiredCount}", toast_unlocked: "আনলক হয়েছে!", toast_ad_error: "বিজ্ঞাপন লোড হয়নি।", loading_ad: "বিজ্ঞাপন লোড হচ্ছে...", verifying_button: "অপেক্ষা করুন {countdown}s", }
+        // --- Feature 1: Dark Mode Logic ---
+        const themeToggle = document.getElementById('themeToggle');
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+        themeToggle.onclick = () => {
+            document.documentElement.classList.toggle('dark');
+            localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
         };
 
-        function applyLanguage(lang) {
-            currentLang = lang;
-            localStorage.setItem('userLanguage', lang);
-            document.querySelectorAll('[data-key]').forEach(el => el.textContent = translations[lang][el.getAttribute('data-key')]);
-            document.querySelectorAll('[data-key-placeholder]').forEach(el => el.placeholder = translations[lang][el.getAttribute('data-key-placeholder')]);
-            languageModal.classList.add('hidden');
-            loadUserPageData();
-        }
+        // --- Feature 59: Back to Top ---
+        const btt = document.getElementById('backToTop');
+        window.onscroll = () => {
+            if (window.scrollY > 300) btt.style.display = 'flex';
+            else btt.style.display = 'none';
+        };
+        btt.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
-        function getText(key, params = {}) {
-            let text = translations[currentLang][key] || key;
-            for (const p in params) text = text.replace(`{${p}}`, params[p]);
-            return text;
-        }
-
-        function showToast(key, params = {}) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-message').textContent = getText(key, params);
-            toast.classList.remove('opacity-0', 'translate-y-10');
-            setTimeout(() => toast.classList.add('opacity-0', 'translate-y-10'), 3000);
-        }
-
-        function renderAd(id, code) {
-            const container = document.getElementById(id);
-            if (!container || !code) return;
-            container.innerHTML = code;
-            Array.from(container.getElementsByTagName('script')).forEach(oldS => {
-                const newS = document.createElement('script');
-                Array.from(oldS.attributes).forEach(a => newS.setAttribute(a.name, a.value));
-                newS.appendChild(document.createTextNode(oldS.innerHTML));
-                oldS.parentNode.replaceChild(newS, oldS);
-            });
-        }
-
-        async function loadUserPageData() {
-            // Load Ads
-            const adSnap = await getDoc(doc(db, "settings", "ads"));
-            if (adSnap.exists()) {
-                const d = adSnap.data();
-                renderAd('ad-container-1', d.adSlot1);
-                renderAd('ad-container-2', d.adSlot2);
-                renderAd('ad-container-3', d.adSlot3);
-            }
-            // Load Settings
+        async function init() {
             const setSnap = await getDoc(doc(db, "settings", "general"));
-            if (setSnap.exists()) timerDuration = setSnap.data().timerDuration || 10;
+            if (setSnap.exists()) waitTime = setSnap.data().timerDuration || 10;
 
-            // Load Sliders
-            const sQuery = query(collection(db, "sliders"), orderBy("createdAt", "desc"));
-            const sSnap = await getDocs(sQuery);
-            sliderWrapper.innerHTML = '';
-            sSnap.forEach((doc, i) => {
-                const d = doc.data();
-                const div = document.createElement('div');
-                div.className = 'slider-item';
-                div.innerHTML = `<img src="${d.imageUrl}" class="w-full h-full object-cover">`;
-                sliderWrapper.appendChild(div);
-                const dot = document.createElement('div');
-                dot.className = `slider-dot ${i===0?'active':''}`;
-                sliderDotsContainer.appendChild(dot);
+            const sSnap = await getDocs(query(collection(db, "sliders"), orderBy("createdAt", "desc")));
+            const sWrap = document.getElementById('slider-wrap');
+            sSnap.forEach(d => {
+                sWrap.innerHTML += `<div class="slider-item"><img src="${d.data().imageUrl}" class="w-full h-full object-cover"></div>`;
             });
-            setupSlider(sSnap.size);
-
-            // Load Files
-            const fQuery = query(collection(db, "files"), orderBy("createdAt", "desc"));
-            const fSnap = await getDocs(fQuery);
-            filesGrid.innerHTML = '';
-            fSnap.forEach(doc => {
-                const f = doc.data();
-                const card = document.createElement('div');
-                card.className = 'file-card bg-white rounded-xl shadow-md overflow-hidden';
-                card.innerHTML = `
-                    <img src="${f.thumbnailUrl}" class="w-full h-40 object-cover">
-                    <div class="p-4">
-                        <h3 class="font-bold truncate">${f.title}</h3>
-                        <button data-id="${doc.id}" data-url="${f.downloadUrl}" data-required="${f.requiredAds}" class="download-btn w-full mt-4 py-2 rounded-lg text-white font-semibold transition-all flex items-center justify-center gap-2">
-                            <i></i> <span></span>
-                        </button>
-                    </div>`;
-                filesGrid.appendChild(card);
-                updateButtonState(card.querySelector('.download-btn'));
-            });
-        }
-
-        function setupSlider(count) {
-            if (count <= 1) return;
-            setInterval(() => {
-                currentSlide = (currentSlide + 1) % count;
-                sliderWrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
-                document.querySelectorAll('.slider-dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
-            }, 4000);
-        }
-
-        function updateButtonState(btn) {
-            const id = btn.dataset.id;
-            const req = parseInt(btn.dataset.required);
-            const count = parseInt(localStorage.getItem(`adCount_${id}`) || 0);
-            const unlocked = count >= req;
-            const span = btn.querySelector('span');
-            const icon = btn.querySelector('i');
-            btn.classList.remove('bg-blue-500', 'bg-green-500');
-            if (unlocked) {
-                span.textContent = getText('download_now_button');
-                icon.className = 'fas fa-download';
-                btn.classList.add('bg-green-500');
-            } else {
-                span.textContent = getText('unlock_button', { adCount: count, requiredCount: req });
-                icon.className = 'fas fa-lock';
-                btn.classList.add('bg-blue-500');
+            if(sSnap.size > 1) {
+                let idx = 0;
+                setInterval(() => {
+                    idx = (idx + 1) % sSnap.size;
+                    sWrap.style.transform = `translateX(-${idx * 100}%)`;
+                }, 4000);
             }
+
+            const fSnap = await getDocs(query(collection(db, "files"), orderBy("createdAt", "desc")));
+            const grid = document.getElementById('files-grid');
+            grid.innerHTML = '';
+
+            fSnap.forEach(d => {
+                const f = d.data();
+                const isPaid = f.requiredAds === 0;
+                
+                // --- Feature 14: Fake Views ---
+                const views = (Math.random() * (12.5 - 1.2) + 1.2).toFixed(1) + "k";
+                
+                const card = document.createElement('div');
+                card.className = "bg-white dark:bg-darkCard rounded-3xl p-4 shadow-sm border border-transparent dark:border-gray-800";
+                card.innerHTML = `
+                    <div class="flex gap-4">
+                        <div class="relative w-24 h-24 flex-shrink-0">
+                            <img src="${f.thumbnailUrl}" class="w-full h-full object-cover rounded-2xl">
+                            <span class="absolute -top-2 -left-2 ${isPaid ? 'bg-amber-500' : 'bg-blue-600'} text-white text-[8px] font-black px-2 py-0.5 rounded-full uppercase">
+                                ${isPaid ? 'Premium' : 'Free'}
+                            </span>
+                        </div>
+                        <div class="flex-1 overflow-hidden">
+                            <h3 class="font-bold text-gray-900 dark:text-white text-sm truncate flex items-center gap-1">
+                                ${f.title}
+                                <i class="fas fa-check-circle text-blue-500 text-[10px]"></i> <!-- Feature 65: Verification Badge -->
+                            </h3>
+                            <div class="flex items-center gap-3 text-[10px] opacity-50 mt-1">
+                                <span><i class="far fa-eye mr-1"></i>${views} Views</span>
+                                <span><i class="fas fa-shield-alt mr-1"></i>Verified</span>
+                            </div>
+                            <!-- Feature 37: ZIP Content Preview Simulator -->
+                            <div class="mt-2 flex gap-1 opacity-40 text-[9px] font-mono">
+                                <span class="bg-gray-100 dark:bg-gray-800 px-1 rounded">index.js</span>
+                                <span class="bg-gray-100 dark:bg-gray-800 px-1 rounded">config.json</span>
+                                <span class="bg-gray-100 dark:bg-gray-800 px-1 rounded">+3 files</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button onclick="handleBtn(this)" 
+                        data-id="${d.id}" data-url="${f.downloadUrl}" data-req="${f.requiredAds}" data-paid="${isPaid}"
+                        class="w-full mt-4 py-3 rounded-2xl text-xs font-black transition-all flex items-center justify-center gap-2 shadow-lg
+                        ${isPaid ? 'bg-gray-900 dark:bg-blue-700 text-white' : 'bg-blue-600 text-white'}">
+                        <i class="${isPaid ? 'fas fa-shopping-cart' : 'fas fa-lock'}"></i>
+                        <span>${isPaid ? 'PURCHASE CODE' : 'UNLOCK DOWNLOAD'}</span>
+                    </button>
+                `;
+                grid.appendChild(card);
+                if(!isPaid) updateBtn(card.querySelector('button'));
+            });
         }
 
-        filesGrid.addEventListener('click', async (e) => {
-            const btn = e.target.closest('.download-btn');
-            if (!btn || btn.disabled) return;
+        window.handleBtn = async (btn) => {
+            if (btn.dataset.paid === "true") {
+                window.location.href = TELEGRAM_LINK;
+                return;
+            }
             const id = btn.dataset.id;
-            const req = parseInt(btn.dataset.required);
-            const count = parseInt(localStorage.getItem(`adCount_${id}`) || 0);
+            const req = parseInt(btn.dataset.req);
+            let count = parseInt(localStorage.getItem(`count_${id}`) || 0);
 
             if (count >= req) {
-                showToast('toast_download_starting');
                 window.open(btn.dataset.url, '_blank');
                 return;
             }
 
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Preparing Ad...`;
             try {
-                btn.disabled = true;
-                btn.querySelector('span').textContent = getText('loading_ad');
                 await show_9745051();
-                
-                const newCount = count + 1;
-                localStorage.setItem(`adCount_${id}`, newCount);
-                
-                if (newCount >= req) {
-                    showToast('toast_unlocked');
-                    updateButtonState(btn);
+                count++;
+                localStorage.setItem(`count_${id}`, count);
+                if (count >= req) {
+                    updateBtn(btn);
                     btn.disabled = false;
                 } else {
-                    showToast('toast_progress', { adCount: newCount, requiredCount: req });
-                    let cd = timerDuration;
+                    let s = waitTime;
                     const timer = setInterval(() => {
-                        btn.querySelector('span').textContent = getText('verifying_button', { countdown: cd });
-                        if (cd <= 0) {
+                        btn.innerHTML = `<i class="fas fa-clock"></i> Wait ${s}s`;
+                        if (s-- <= 0) {
                             clearInterval(timer);
-                            updateButtonState(btn);
+                            updateBtn(btn);
                             btn.disabled = false;
                         }
-                        cd--;
                     }, 1000);
                 }
-            } catch (err) {
-                showToast('toast_ad_error');
-                btn.disabled = false;
-                updateButtonState(btn);
-            }
-        });
+            } catch { btn.disabled = false; updateBtn(btn); }
+        };
 
-        window.addEventListener('load', () => {
-            const saved = localStorage.getItem('userLanguage');
-            if (saved) applyLanguage(saved); else languageModal.classList.remove('hidden');
-        });
+        function updateBtn(btn) {
+            const id = btn.dataset.id;
+            const req = btn.dataset.req;
+            const count = localStorage.getItem(`count_${id}`) || 0;
+            const ok = count >= req;
+            btn.querySelector('span').textContent = ok ? "DOWNLOAD NOW" : `UNLOCK (${count}/${req})`;
+            btn.querySelector('i').className = ok ? "fas fa-cloud-download-alt" : "fas fa-lock";
+            if(ok) btn.classList.replace('bg-blue-600', 'bg-green-600');
+        }
 
-        document.querySelectorAll('.lang-btn').forEach(b => b.addEventListener('click', () => applyLanguage(b.dataset.lang)));
-        searchInput.addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase();
-            document.querySelectorAll('.file-card').forEach(card => {
-                const match = card.innerText.toLowerCase().includes(term);
-                card.style.display = match ? 'block' : 'none';
-            });
-        });
+        init();
     </script>
 </body>
 </html>
